@@ -5,10 +5,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/victormelos/curso-youtube/src/configuration/logger"
 	"github.com/victormelos/curso-youtube/src/controler/routes"
 )
 
 func main() {
+	logger.Info("Starting application")
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
