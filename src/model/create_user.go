@@ -8,13 +8,13 @@ import (
 
 func (ud *UserDomain) CreateUser() *rest_err.RestErr {
 	logger.Info("Init CreateUser", zap.String("journey", "createUser"))
-	logger.Info("Password before encryption", zap.String("password", ud.Password))
+	logger.Info("Password before encryption", zap.String("password", ud.password))
 
 	if err := ud.EncoderConfigyptPassword(); err != nil {
 		logger.Error("Error encrypting password", err)
 		return rest_err.NewInternalServerError("Error when trying to encrypt password")
 	}
 
-	logger.Info("Password after encryption", zap.String("password", ud.Password))
+	logger.Info("Password after encryption", zap.String("password", ud.password))
 	return nil
 }

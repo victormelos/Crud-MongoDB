@@ -27,7 +27,7 @@ func CreateUser(c *gin.Context) {
 	var userRequest request.UserRequest
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
-		logger.Error("Error trying marshal object", zap.Error(err))
+		logger.Error("Error trying marshal object")
 		errRest := validation.ValidateUserError(err)
 		c.JSON(errRest.Code, errRest)
 		return
@@ -47,7 +47,13 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	c.String(http.StatusCreated, "")
+	response := request.UserResponse{
+		Name:  domain.GetName(),
+		Email: domain.GetEmail(),
+		Age:   domain.GetAge(),
+	}
+
+	c.JSON(http.StatusCreated, response)
 }
 
 func EncoderConfigyptPassword(password string) (string, error) {
