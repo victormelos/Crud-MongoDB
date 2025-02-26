@@ -9,6 +9,7 @@ require (
 	github.com/go-playground/validator/v10 v10.25.0
 	github.com/joho/godotenv v1.5.1
 	go.uber.org/zap v1.27.0
+	golang.org/x/crypto v0.35.0
 )
 
 require (
@@ -30,7 +31,6 @@ require (
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.14.0 // indirect
-	golang.org/x/crypto v0.35.0 // indirect
 	golang.org/x/net v0.35.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/text v0.22.0 // indirect

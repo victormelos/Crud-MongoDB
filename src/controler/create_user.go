@@ -6,14 +6,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/victormelos/curso-youtube/src/configuration/validation"
 	"github.com/victormelos/curso-youtube/src/controler/model/request"
-	"github.com/victormelos/curso-youtube/src/model"
+	"github.com/victormelos/curso-youtube/src/model/service"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 )
 
 var (
 	logger     *zap.Logger
-	UserDomain model.UserDomainInterface
+	UserDomain service.UserDomainInterface
 )
 
 func init() {
@@ -27,7 +27,7 @@ func CreateUser(c *gin.Context) {
 	var userRequest request.UserRequest
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
-		logger.Error("Error trying marshal object")
+		logger.Error("Error trying marshal object", zap.Error(err))
 		errRest := validation.ValidateUserError(err)
 		c.JSON(errRest.Code, errRest)
 		return
@@ -35,22 +35,23 @@ func CreateUser(c *gin.Context) {
 
 	logger.Info("Request to create user", zap.Any("user", userRequest))
 
-	domain := model.NewUserDomain(
+	domain := service.NewUserDomain(
 		userRequest.Password,
 		userRequest.Email,
 		userRequest.Name,
 		userRequest.Age,
 	)
 
-	if err := domain.CreateUser(); err != nil {
+	domainService := service.NewUserDomainService(domain)
+	if err := domainService.CreateUser(); err != nil {
 		c.JSON(err.Code, err)
 		return
 	}
 
 	response := request.UserResponse{
-		Name:  domain.GetName(),
-		Email: domain.GetEmail(),
-		Age:   domain.GetAge(),
+		Name:  domainService.GetName(),
+		Email: domainService.GetEmail(),
+		Age:   domainService.GetAge(),
 	}
 
 	c.JSON(http.StatusCreated, response)

@@ -1,7 +1,7 @@
-package model
+package service
 
 import "github.com/victormelos/curso-youtube/src/configuration/rest_err"
 
-func (ud *UserDomain) DeleteUser() *rest_err.RestErr {
+func (ud *UserDomainService) FindUser() *rest_err.RestErr {
 	return nil
 }
