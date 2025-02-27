@@ -14,18 +14,22 @@ func main() {
 	logger.Info("Starting application")
 
 	// Carrega o .env, mas não falha se não existir
-	godotenv.Load()
+	if err := godotenv.Load(); err != nil {
+		log.Printf("Warning: .env file not found")
+	}
 
-	// Inicializa a conexão com o MongoDB
+	// Inicializa conexão com MongoDB
 	_, err := mongodb.NewMongoDBConnection()
 	if err != nil {
 		log.Fatal("Error connecting to database:", err)
 	}
 
+	// Configura rotas
 	router := gin.Default()
 	routes.InitRoutes(&router.RouterGroup)
+
+	// Inicia o servidor
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}
-
 }

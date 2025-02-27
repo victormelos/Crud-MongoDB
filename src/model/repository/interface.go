@@ -2,13 +2,13 @@ package repository
 
 import (
 	"github.com/victormelos/curso-youtube/src/configuration/rest_err"
-	"github.com/victormelos/curso-youtube/src/model/service"
+	"github.com/victormelos/curso-youtube/src/domain/user"
 )
 
 type UserRepository interface {
-	CreateUser(userDomain service.UserDomainInterface) (service.UserDomainInterface, *rest_err.RestErr)
-	FindUserByEmail(email string) (service.UserDomainInterface, *rest_err.RestErr)
-	FindUserByID(id string) (service.UserDomainInterface, *rest_err.RestErr)
-	UpdateUser(string, service.UserDomainInterface) *rest_err.RestErr
-	DeleteUser(string) *rest_err.RestErr
+	Create(userDomain *user.UserDomain) (*user.UserDomain, *rest_err.RestErr)
+	FindByEmail(email string) (*user.UserDomain, *rest_err.RestErr)
+	FindByID(id string) (*user.UserDomain, *rest_err.RestErr)
+	Update(id string, user *user.UserDomain) *rest_err.RestErr
+	Delete(id string) *rest_err.RestErr
 }

@@ -1,7 +1,10 @@
 package service
 
-import "github.com/victormelos/curso-youtube/src/configuration/rest_err"
+import (
+	"github.com/victormelos/curso-youtube/src/configuration/rest_err"
+	"github.com/victormelos/curso-youtube/src/domain/user"
+)
 
-func (ud *UserDomainService) UpdateUser() *rest_err.RestErr {
-	return nil
+func (ud *userDomainService) Update(id string, userDomain *user.UserDomain) *rest_err.RestErr {
+	return ud.repository.Update(id, userDomain)
 }

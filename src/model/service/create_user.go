@@ -3,23 +3,24 @@ package service
 import (
 	"github.com/victormelos/curso-youtube/src/configuration/logger"
 	"github.com/victormelos/curso-youtube/src/configuration/rest_err"
+	"github.com/victormelos/curso-youtube/src/domain/user"
 	"go.uber.org/zap"
 )
 
-func (ud *UserDomainService) CreateUser() *rest_err.RestErr {
+func (ud *userDomainService) Create(userDomain *user.UserDomain) (*user.UserDomain, *rest_err.RestErr) {
 	logger.Info("Init CreateUser service", zap.String("journey", "createUser"))
 
-	if err := ud.UserDomainInterface.EncryptPassword(); err != nil {
+	if err := userDomain.EncryptPassword(); err != nil {
 		logger.Error("Error trying to encrypt password", err)
-		return rest_err.NewInternalServerError("Error trying to create user")
+		return nil, rest_err.NewInternalServerError("Error trying to create user")
 	}
 
-	repo := ud.userRepository
-	_, err := repo.CreateUser(ud.UserDomainInterface)
+	repo := ud.repository
+	_, err := repo.Create(userDomain)
 	if err != nil {
 		logger.Error("Error trying to call repository", err)
-		return err
+		return nil, err
 	}
 
-	return nil
+	return userDomain, nil
 }
