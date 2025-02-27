@@ -90,6 +90,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 	}
 
 	userDomain := &user.UserDomain{
+		ID:    userRequest.ID,
 		Name:  userRequest.Name,
 		Email: userRequest.Email,
 		Age:   userRequest.Age,

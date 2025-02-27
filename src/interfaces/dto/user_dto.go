@@ -10,6 +10,7 @@ type UserRequest struct {
 
 // UserUpdateRequest representa a estrutura de dados para atualização de usuário
 type UserUpdateRequest struct {
+	ID    string `json:"id" binding:"required"`
 	Name  string `json:"name" binding:"required,min=3,max=100"`
 	Email string `json:"email" binding:"required,email"`
 	Age   int    `json:"age" binding:"required,min=1,max=130"`
