@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 
+	"github.com/victormelos/curso-youtube/src/configuration/logger"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -12,8 +13,14 @@ var (
 	MongoDBClient *mongo.Client
 )
 
-func InitConnection() (*mongo.Client, error) {
-	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("MONGODB_URL")))
+func NewMongoDBConnection() (*mongo.Client, error) {
+	mongodb_uri := os.Getenv("MONGODB_URL")
+	if mongodb_uri == "" {
+		mongodb_uri = ""
+
+	}
+
+	client, err := mongo.NewClient(options.Client().ApplyURI(mongodb_uri))
 	if err != nil {
 		return nil, err
 	}
@@ -26,6 +33,7 @@ func InitConnection() (*mongo.Client, error) {
 		return nil, err
 	}
 
+	logger.Info("Database connected")
 	MongoDBClient = client
 	return MongoDBClient, nil
 }

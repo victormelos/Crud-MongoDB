@@ -12,9 +12,14 @@ import (
 
 func main() {
 	logger.Info("Starting application")
-	err := godotenv.Load()
+
+	// Carrega o .env, mas não falha se não existir
+	godotenv.Load()
+
+	// Inicializa a conexão com o MongoDB
+	_, err := mongodb.NewMongoDBConnection()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error connecting to database:", err)
 	}
 
 	router := gin.Default()
@@ -22,7 +27,5 @@ func main() {
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}
-
-	mongodb.InitConnection()
 
 }
