@@ -13,10 +13,10 @@ import (
 )
 
 type UpdateUserInput struct {
-	Name     *string `json:"name,omitempty"`
-	Email    *string `json:"email,omitempty"`
-	Age      *int    `json:"age,omitempty"`
-	Password *string `json:"password,omitempty"`
+	Name     *string `json:"name,omitempty" validate:"omitempty,min=3,max=100"`
+	Email    *string `json:"email,omitempty" validate:"omitempty,email"`
+	Age      *int    `json:"age,omitempty" validate:"omitempty,min=1,max=130"`
+	Password *string `json:"password,omitempty" validate:"omitempty,min=6,max=100,containsany=!@#$%*&"`
 }
 
 func UpdateUser(c *gin.Context) {
