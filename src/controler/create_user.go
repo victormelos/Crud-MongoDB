@@ -4,9 +4,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	mongoClient "github.com/victormelos/curso-youtube/src/configuration/database/mongodb"
 	"github.com/victormelos/curso-youtube/src/configuration/logger"
 	"github.com/victormelos/curso-youtube/src/configuration/validation"
 	"github.com/victormelos/curso-youtube/src/controler/model/request"
+	"github.com/victormelos/curso-youtube/src/model/repository/mongodb"
 	"github.com/victormelos/curso-youtube/src/model/service"
 )
 
@@ -30,7 +32,9 @@ func CreateUser(c *gin.Context) {
 		userRequest.Age,
 	)
 
-	domainService := service.NewUserDomainService(domain)
+	repository := mongodb.NewUserRepository(mongoClient.MongoDBClient)
+	domainService := service.NewUserDomainService(domain, repository)
+
 	if err := domainService.CreateUser(); err != nil {
 		c.JSON(err.Code, err)
 		return

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/victormelos/curso-youtube/src/configuration/rest_err"
+	"github.com/victormelos/curso-youtube/src/model/domain"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -26,31 +27,33 @@ type UserDomainServiceInterface interface {
 }
 
 type UserDomainService struct {
-	UserDomainInterface
+	domain.UserDomainInterface
+	userRepository domain.UserRepositoryInterface
 }
 
-func NewUserDomainService(domain UserDomainInterface) *UserDomainService {
+func NewUserDomainService(userDomain domain.UserDomainInterface, repository domain.UserRepositoryInterface) *UserDomainService {
 	return &UserDomainService{
-		UserDomainInterface: domain,
+		UserDomainInterface: userDomain,
+		userRepository:      repository,
 	}
 }
 
 func NewUserDomain(password, email, name string, age int) UserDomainInterface {
 	return &userDomain{
-		password: password,
-		email:    email,
-		name:     name,
-		age:      age,
+		Password: password,
+		Email:    email,
+		Name:     name,
+		Age:      age,
 	}
 }
 
 type userDomain struct {
-	password  string
-	email     string
-	name      string
-	age       int
-	createdAt time.Time
-	updatedAt time.Time
+	Password  string    `bson:"password"`
+	Email     string    `bson:"email"`
+	Name      string    `bson:"name"`
+	Age       int       `bson:"age"`
+	CreatedAt time.Time `bson:"created_at"`
+	UpdatedAt time.Time `bson:"updated_at"`
 }
 
 func (ud *userDomain) CreateUser() *rest_err.RestErr {
@@ -70,34 +73,34 @@ func (ud *userDomain) DeleteUser() *rest_err.RestErr {
 }
 
 func (ud *userDomain) GetPassword() string {
-	return ud.password
+	return ud.Password
 }
 
 func (ud *userDomain) EncryptPassword() error {
-	hash, err := bcrypt.GenerateFromPassword([]byte(ud.password), bcrypt.DefaultCost)
+	hash, err := bcrypt.GenerateFromPassword([]byte(ud.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
-	ud.password = string(hash)
+	ud.Password = string(hash)
 	return nil
 }
 
 func (ud *userDomain) GetEmail() string {
-	return ud.email
+	return ud.Email
 }
 
 func (ud *userDomain) GetName() string {
-	return ud.name
+	return ud.Name
 }
 
 func (ud *userDomain) GetAge() int {
-	return ud.age
+	return ud.Age
 }
 
 func (ud *userDomain) SetCreatedAt(time time.Time) {
-	ud.createdAt = time
+	ud.CreatedAt = time
 }
 
 func (ud *userDomain) SetUpdatedAt(time time.Time) {
-	ud.updatedAt = time
+	ud.UpdatedAt = time
 }

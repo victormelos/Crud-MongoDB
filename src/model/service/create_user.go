@@ -7,14 +7,19 @@ import (
 )
 
 func (ud *UserDomainService) CreateUser() *rest_err.RestErr {
-	logger.Info("Init CreateUser", zap.String("journey", "createUser"))
-	logger.Info("Password before encryption", zap.String("password", ud.UserDomainInterface.GetPassword()))
+	logger.Info("Init CreateUser service", zap.String("journey", "createUser"))
 
 	if err := ud.UserDomainInterface.EncryptPassword(); err != nil {
-		logger.Error("Error encrypting password", err)
-		return rest_err.NewInternalServerError("Error when trying to encrypt password")
+		logger.Error("Error trying to encrypt password", err)
+		return rest_err.NewInternalServerError("Error trying to create user")
 	}
 
-	logger.Info("Password after encryption", zap.String("password", ud.UserDomainInterface.GetPassword()))
+	repo := ud.userRepository
+	_, err := repo.CreateUser(ud.UserDomainInterface)
+	if err != nil {
+		logger.Error("Error trying to call repository", err)
+		return err
+	}
+
 	return nil
 }
