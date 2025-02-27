@@ -1,6 +1,8 @@
 package service
 
 import (
+	"time"
+
 	"github.com/victormelos/curso-youtube/src/configuration/rest_err"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -15,6 +17,8 @@ type UserDomainInterface interface {
 	GetName() string
 	GetAge() int
 	EncryptPassword() error
+	SetCreatedAt(time.Time)
+	SetUpdatedAt(time.Time)
 }
 
 type UserDomainServiceInterface interface {
@@ -41,10 +45,12 @@ func NewUserDomain(password, email, name string, age int) UserDomainInterface {
 }
 
 type userDomain struct {
-	password string
-	email    string
-	name     string
-	age      int
+	password  string
+	email     string
+	name      string
+	age       int
+	createdAt time.Time
+	updatedAt time.Time
 }
 
 func (ud *userDomain) CreateUser() *rest_err.RestErr {
@@ -86,4 +92,12 @@ func (ud *userDomain) GetName() string {
 
 func (ud *userDomain) GetAge() int {
 	return ud.age
+}
+
+func (ud *userDomain) SetCreatedAt(time time.Time) {
+	ud.createdAt = time
+}
+
+func (ud *userDomain) SetUpdatedAt(time time.Time) {
+	ud.updatedAt = time
 }
