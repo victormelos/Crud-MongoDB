@@ -12,3 +12,7 @@ func (ud *userDomainService) FindByEmail(email string) (*user.UserDomain, *rest_
 func (ud *userDomainService) FindByID(id string) (*user.UserDomain, *rest_err.RestErr) {
 	return ud.repository.FindByID(id)
 }
+
+func (ud *userDomainService) FindAll() ([]*user.UserDomain, *rest_err.RestErr) {
+	return ud.repository.FindAll()
+}

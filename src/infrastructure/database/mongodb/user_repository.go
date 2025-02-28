@@ -121,3 +121,23 @@ func (ur *userRepository) Delete(id string) *rest_err.RestErr {
 
 	return nil
 }
+
+func (ur *userRepository) FindAll() ([]*user.UserDomain, *rest_err.RestErr) {
+	logger.Info("Iniciando busca de todos os usuários no MongoDB")
+	collection := ur.db.Database(os.Getenv("MONGODB_USER_DB")).Collection("users")
+
+	cursor, err := collection.Find(context.Background(), bson.M{})
+	if err != nil {
+		logger.Error("Erro ao buscar usuários no MongoDB", err)
+		return nil, rest_err.NewInternalServerError("Erro ao buscar usuários")
+	}
+	defer cursor.Close(context.Background())
+
+	var users []*user.UserDomain
+	if err := cursor.All(context.Background(), &users); err != nil {
+		logger.Error("Erro ao decodificar usuários do MongoDB", err)
+		return nil, rest_err.NewInternalServerError("Erro ao buscar usuários")
+	}
+
+	return users, nil
+}

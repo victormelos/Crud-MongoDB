@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	mongoClient "github.com/victormelos/curso-youtube/src/configuration/database/mongodb"
+	jwtConfig "github.com/victormelos/curso-youtube/src/configuration/jwt"
 	"github.com/victormelos/curso-youtube/src/configuration/logger"
 	"github.com/victormelos/curso-youtube/src/configuration/rest_err"
 	"github.com/victormelos/curso-youtube/src/domain/user"
@@ -13,10 +14,20 @@ import (
 )
 
 type CreateUserInput struct {
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
-	Age      int    `json:"age" binding:"required"`
+	Name     string `json:"name" binding:"required,min=3,max=100"`
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=6,max=100"`
+	Age      int    `json:"age" binding:"required,min=1,max=130"`
+	IsAdmin  bool   `json:"is_admin"`
+}
+
+type CreateUserResponse struct {
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	Email   string `json:"email"`
+	Age     int    `json:"age"`
+	Token   string `json:"token"`
+	IsAdmin bool   `json:"is_admin"`
 }
 
 func CreateUser(c *gin.Context) {
@@ -34,6 +45,7 @@ func CreateUser(c *gin.Context) {
 		Email:    userInput.Email,
 		Password: userInput.Password,
 		Age:      userInput.Age,
+		IsAdmin:  userInput.IsAdmin,
 	}
 
 	repository := mongodb.NewUserRepository(mongoClient.MongoDBClient)
@@ -45,10 +57,24 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
-		"id":    result.ID,
-		"name":  result.Name,
-		"email": result.Email,
-		"age":   result.Age,
+	// Gerar token JWT
+	token, err := jwtConfig.GenerateToken(
+		result.ID,
+		result.Name,
+		result.Email,
+		result.IsAdmin,
+	)
+	if err != nil {
+		c.JSON(err.Code, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, CreateUserResponse{
+		ID:      result.ID,
+		Name:    result.Name,
+		Email:   result.Email,
+		Age:     result.Age,
+		Token:   token,
+		IsAdmin: result.IsAdmin,
 	})
 }

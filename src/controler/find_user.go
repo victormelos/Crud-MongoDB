@@ -62,4 +62,30 @@ func FindUserByEmail(c *gin.Context) {
 		Email: userDomain.Email,
 		Age:   userDomain.Age,
 	})
+
+}
+
+func FindAllUsers(c *gin.Context) {
+	logger.Info("Init FindAllUsers controller")
+
+	repository := mongodb.NewUserRepository(mongoClient.MongoDBClient)
+	domainService := service.NewUserDomainService(repository)
+
+	users, err := domainService.FindAll()
+	if err != nil {
+		logger.Error("Error trying to call FindAll service", err)
+		c.JSON(err.Code, err)
+		return
+	}
+
+	var response []request.UserResponse
+	for _, user := range users {
+		response = append(response, request.UserResponse{
+			Name:  user.Name,
+			Email: user.Email,
+			Age:   user.Age,
+		})
+	}
+
+	c.JSON(http.StatusOK, response)
 }

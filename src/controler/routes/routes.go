@@ -3,12 +3,21 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/victormelos/curso-youtube/src/controler"
+	"github.com/victormelos/curso-youtube/src/middleware"
 )
 
 func InitRoutes(r *gin.RouterGroup) {
-	r.GET("/getUserById", controler.FindUserById)
-	r.GET("/getUserByEmail", controler.FindUserByEmail)
+	// Rotas públicas
 	r.POST("/createUser", controler.CreateUser)
-	r.PUT("/updateUser", controler.UpdateUser)
-	r.DELETE("/deleteUser", controler.DeleteUser)
+
+	// Rotas protegidas
+	protected := r.Group("/")
+	protected.Use(middleware.AuthMiddleware())
+	{
+		protected.GET("/getUserById", controler.FindUserById)
+		protected.GET("/getUserByEmail", controler.FindUserByEmail)
+		protected.GET("/getAllUsers", controler.FindAllUsers)
+		protected.PUT("/updateUser", controler.UpdateUser)
+		protected.DELETE("/deleteUser", controler.DeleteUser)
+	}
 }

@@ -64,3 +64,7 @@ func (s *userService) ValidatePassword(password string) error {
 	}
 	return nil
 }
+
+func (s *userService) FindAll() ([]*user.UserDomain, *rest_err.RestErr) {
+	return s.repository.FindAll()
+}

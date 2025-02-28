@@ -14,6 +14,7 @@ type UserDomain struct {
 	Email     string    `bson:"email"`
 	Password  string    `bson:"password"`
 	Age       int       `bson:"age"`
+	IsAdmin   bool      `bson:"is_admin"`
 	CreatedAt time.Time `bson:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at"`
 }
@@ -34,6 +35,7 @@ type UserRepositoryInterface interface {
 	FindByID(id string) (*UserDomain, *rest_err.RestErr)
 	Update(id string, user *UserDomain) *rest_err.RestErr
 	Delete(id string) *rest_err.RestErr
+	FindAll() ([]*UserDomain, *rest_err.RestErr)
 }
 
 // UserServiceInterface define o contrato para operações de serviço
@@ -43,5 +45,6 @@ type UserServiceInterface interface {
 	FindByID(id string) (*UserDomain, *rest_err.RestErr)
 	Update(id string, user *UserDomain) *rest_err.RestErr
 	Delete(id string) *rest_err.RestErr
+	FindAll() ([]*UserDomain, *rest_err.RestErr)
 	ValidatePassword(password string) error
 }

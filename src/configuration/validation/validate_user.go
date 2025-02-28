@@ -35,9 +35,9 @@ func ValidateUserError(err error) *rest_err.RestErr {
 	}
 
 	if errors.As(err, &jsonValidationError) {
-		errorsCauses := []rest_err.Cause{}
+		errorsCauses := []rest_err.Causes{}
 		for _, e := range err.(validator.ValidationErrors) {
-			cause := rest_err.Cause{
+			cause := rest_err.Causes{
 				Message: e.Translate(transl),
 				Field:   e.Field(),
 			}
